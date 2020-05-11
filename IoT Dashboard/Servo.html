@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+
+
+#grad1 {
+    height: 730px;
+    background: blue; /* For browsers that do not support gradients */
+    background: linear-gradient(to bottom right, blue, gold); /* Standard syntax (must be last) */
+}
+</style>
+
+
+
+
+<meta http-equiv="refresh" content="2">
+
+<script>
+
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var myObj = JSON.parse(this.responseText);
+        document.getElementById("demo").innerHTML = myObj.degree;
+    }
+};
+xmlhttp.open("GET", "https://us.wio.seeed.io/v1/node/GroveServoD2/angle?access_token=2974f3b0ab4b63c91b84197f534c5521", true);
+xmlhttp.send();
+
+
+
+</script>
+
+</head>
+
+
+<body id = "grad1">
+
+<h1> <center> View your Wio link data live! </center> </h1>
+
+<h2> <center> Servo </center></h2>
+
+<center><font size = "7"><p id="demo"></p></font></center>
+
+
+
+</body>
+</html>

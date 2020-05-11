@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+
+<script>
+
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var myObj =this.responseText;
+        document.getElementById("demo").innerHTML = myObj;
+    }
+};
+xmlhttp.open("GET", "https://www.steamplaygroundbeta.com/dashboard.html", true);
+xmlhttp.send();
+
+
+</script>
+
+</head>
+
+
+<body>
+
+<p id="demo"></p>
+
+<ul id = "myList"> </ul>
+
+<button onclick="myFunction()">Collect Data</button>
+
+<script>
+var myVar;
+
+function myFunction() {
+    myVar = setInterval(addNew, 1000);
+}
+
+
+function addNew()
+{
+    var node = document.createElement("LI");
+    var textnode = document.createTextNode(document.getElementById("demo").innerHTML);
+    node.appendChild(textnode);
+    document.getElementById("myList").appendChild(node);
+}
+
+</script>
+
+</body>
+</html>

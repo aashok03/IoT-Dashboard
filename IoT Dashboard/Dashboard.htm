@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<style>
+#grad1 {
+    height: 730px;
+    background: red; /* For browsers that do not support gradients */
+    background: linear-gradient(to bottom right, red, yellow); /* Standard syntax (must be last) */
+}
+</style>
+
+<body id = "grad1">
+
+<style>
+#div1 {
+    width: 1250px;
+    height: 930px;
+    padding: 10px;
+    border: 1px solid #aaaaaa;
+}
+</style>
+
+
+
+<script>
+function allowDrop(ev) {
+    ev.preventDefault();
+}
+
+function drag(ev) {
+    ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+    ev.preventDefault();
+    var data = ev.dataTransfer.getData("text");
+    ev.target.appendChild(document.getElementById(data));
+}
+</script>
+
+
+<h1><center>IoT Dashboard</center></h1>
+
+<p>Click the button to demonstrate the prompt box where you can enter the API for your Wio link</p>
+
+<button onclick="myFunction()">Try it</button>
+
+<script>
+function myFunction() {
+    var person = prompt("Please enter your name", "Harry Potter");
+    if (person != null) {
+        document.getElementById("demo1").innerHTML = "" + person;
+    }
+}
+
+
+</script>
+<style>
+ul 
+{
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+}
+
+li 
+{
+    float: left;
+}
+
+li a, .dropbtn 
+{
+    display: inline-block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+li a:hover, .dropdown:hover .dropbtn 
+{
+    background-color: red;
+}
+
+li.dropdown 
+{
+    display: inline-block;
+}
+
+.dropdown-content 
+{
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a 
+{
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+.dropdown:hover .dropdown-content 
+{
+    display: block;
+}
+</style>
+
+
+
+
+<ul>
+  
+
+  <li class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn">Explore our Widgets</a>
+    <div class="dropdown-content">
+      
+      <a href="#">Ultrasonic Ranger</a>
+
+      <a href="#">Button</a>
+
+      <a href = "#"> Servo </a>
+    </div>
+
+
+<li class="dropdown">
+    <a href="javascript:void(0)" class="dropbtn">View Live Data</a>
+    <div class="dropdown-content">
+      
+      <a href="file:///C:/Users/athok/Desktop/Ultrasonic.htm">Ultrasonic Ranger</a>
+
+      <a href="file:///C:/Users/athok/Desktop/Button.htm">Button</a>
+
+      <a href = "file:///C:/Users/athok/Desktop/Servo.html"> Servo </a>
+    </div>
+
+
+
+  <li><a href="file:///C:/Users/athok/Desktop/CEEO.htm">Read More About Widgets</a></li>
+
+  <li><a href="http://iot.seeed.cc/">Visit the Wio Link Website</a></li>
+  </li>
+</ul>
+
+
+  <script src="https://cdn.rawgit.com/konvajs/konva/2.1.3/konva.min.js"></script>
+  <meta charset="utf-8">
+
+  </style>
+  <div id="container"></div>
+  <script>
+    var width =  window.innerWidth - 10;
+    var height = 590;
+
+    function update(activeAnchor) {
+        var group = activeAnchor.getParent();
+
+        var topLeft = group.get('.topLeft')[0];
+        var topRight = group.get('.topRight')[0];
+        var bottomRight = group.get('.bottomRight')[0];
+        var bottomLeft = group.get('.bottomLeft')[0];
+        var image = group.get('Image')[0];
+
+        var anchorX = activeAnchor.getX();
+        var anchorY = activeAnchor.getY();
+
+        // update anchor positions
+        switch (activeAnchor.getName()) {
+            case 'topLeft':
+                topRight.setY(anchorY);
+                bottomLeft.setX(anchorX);
+                break;
+            case 'topRight':
+                topLeft.setY(anchorY);
+                bottomRight.setX(anchorX);
+                break;
+            case 'bottomRight':
+                bottomLeft.setY(anchorY);
+                topRight.setX(anchorX);
+                break;
+            case 'bottomLeft':
+                bottomRight.setY(anchorY);
+                topLeft.setX(anchorX);
+                break;
+        }
+
+        image.position(topLeft.position());
+
+        var width = topRight.getX() - topLeft.getX();
+        var height = bottomLeft.getY() - topLeft.getY();
+        if(width && height) {
+            image.width(width);
+            image.height(height);
+        }
+    }
+    function addAnchor(group, x, y, name) {
+        var stage = group.getStage();
+        var layer = group.getLayer();
+
+        var anchor = new Konva.Circle({
+            x: x,
+            y: y,
+            stroke: '#666',
+            fill: '#ddd',
+            strokeWidth: 2,
+            radius: 8,
+            name: name,
+            draggable: true,
+            dragOnTop: false
+        });
+
+        anchor.on('dragmove', function() {
+            update(this);
+            layer.draw();
+        });
+        anchor.on('mousedown touchstart', function() {
+            group.setDraggable(false);
+            this.moveToTop();
+        });
+        anchor.on('dragend', function() {
+            group.setDraggable(true);
+            layer.draw();
+        });
+        // add hover styling
+        anchor.on('mouseover', function() {
+            var layer = this.getLayer();
+            document.body.style.cursor = 'pointer';
+            this.setStrokeWidth(4);
+            layer.draw();
+        });
+        anchor.on('mouseout', function() {
+            var layer = this.getLayer();
+            document.body.style.cursor = 'default';
+            this.setStrokeWidth(2);
+            layer.draw();
+        });
+
+        group.add(anchor);
+    }
+
+    var stage = new Konva.Stage({
+        container: 'container',
+        width: width,
+        height: height
+    });
+
+    var layer = new Konva.Layer();
+    stage.add(layer);
+
+    // darth vader
+    var darthVaderImg = new Konva.Image({
+        width: 200,
+        height: 137
+    });
+
+    // yoda
+    var yodaImg = new Konva.Image({
+        width: 93,
+        height: 104
+    });
+
+    var darthVaderGroup = new Konva.Group({
+        x: 180,
+        y: 50,
+        draggable: true
+    });
+    layer.add(darthVaderGroup);
+    darthVaderGroup.add(darthVaderImg);
+    addAnchor(darthVaderGroup, 0, 0, 'topLeft');
+    addAnchor(darthVaderGroup, 200, 0, 'topRight');
+    addAnchor(darthVaderGroup, 200, 138, 'bottomRight');
+    addAnchor(darthVaderGroup, 0, 138, 'bottomLeft');
+
+    var yodaGroup = new Konva.Group({
+        x: 20,
+        y: 110,
+        draggable: true
+    });
+    layer.add(yodaGroup);
+    yodaGroup.add(yodaImg);
+    addAnchor(yodaGroup, 0, 0, 'topLeft');
+    addAnchor(yodaGroup, 93, 0, 'topRight');
+    addAnchor(yodaGroup, 93, 104, 'bottomRight');
+    addAnchor(yodaGroup, 0, 104, 'bottomLeft');
+
+    var imageObj1 = new Image();
+    imageObj1.onload = function() {
+        darthVaderImg.image(imageObj1);
+        layer.draw();
+    };
+
+    imageObj1.src = "https://seeeddoc.github.io/Wio_Link/img/WioLink_Configure.png";
+
+    var imageObj2 = new Image();
+    imageObj2.onload = function() {
+        yodaImg.image(imageObj2);
+        layer.draw();
+    };
+    imageObj2.src = "https://seeeddoc.github.io/Wio_Link/img/WioLink_Configure.png";
+
+</script>
+
+<!--<meta http-equiv="refresh" content="1">-->
+
+<script>
+
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var myObj = JSON.parse(this.responseText);
+        document.getElementById("demo").innerHTML = myObj.range_cm;
+    }
+};
+xmlhttp.open("GET", document.getElementById("demo1").innerHTML, true);
+xmlhttp.send();
+
+</script>
+
+</head>
+
+<center><font size = "7"><p id="demo"></p></font></center>
+<p id = "demo1"> </p>
+
+</body>
+</html>
+

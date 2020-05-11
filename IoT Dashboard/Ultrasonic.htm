@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<style>
+
+
+#grad1 {
+    height: 730px;
+    background: blue; /* For browsers that do not support gradients */
+    background: linear-gradient(to bottom right, green, black); /* Standard syntax (must be last) */
+}
+</style>
+
+
+
+
+<meta http-equiv="refresh" content="1">
+
+<script>
+
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+        var myObj = JSON.parse(this.responseText);
+        document.getElementById("demo").innerHTML = myObj.range_cm;
+    }
+};
+xmlhttp.open("GET", "https://us.wio.seeed.io/v1/node/GroveUltraRangerD0/range_in_cm?access_token=2974f3b0ab4b63c91b84197f534c5521", true);
+xmlhttp.send();
+
+
+function loadNowPlaying(){
+  $("#demo").load(document.getElementById("demo").innerHTML);
+}
+setInterval(function(){loadNowPlaying()}, 500);
+
+
+</script>
+
+</head>
+
+
+<body id = "grad1">
+
+<h1> <center> View your Wio link data live! </center> </h1>
+
+<h2> <center> Ultrasonic Sensor </center></h2>
+
+<center><font size = "7"><div id="demo"></div></font></center>
+
+
+</body>
+</html>

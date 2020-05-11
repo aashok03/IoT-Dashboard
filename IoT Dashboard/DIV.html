@@ -1,0 +1,26 @@
+<html>
+<head>
+<title>Auto-Refresh DIV</title>
+<body>
+
+
+<div id = "auto"></div>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+$ ('#auto').fadeOut('slow').load('Test.php');
+refresh();
+});
+
+
+function refresh()
+{
+    setTimeout(function() {
+        $('#auto').fadeOut('slow').load('Test.php').fadeIn('slow');
+	refresh();
+}, 200};
+   
+</script>
+</head>
+</body>
+</html>

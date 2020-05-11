@@ -1,0 +1,128 @@
+<html>
+<head>
+<title>Refresh Div</title>
+<meta charset = "UTF-8">
+<meta name = "viewport" content = "width=device-width, initial-scale = 1.0">
+
+<style>
+    #auto_load_div{width:70px; height: 30px; margin: 40px auto; color:#fff;}
+</style>
+
+</head>
+
+
+<form id = "form1">
+Enter your URL: <input name = "name" type = "text" size = "20">
+</form>
+<button onclick="function()">Enter URL</button>
+
+
+<script>
+$(document).ready(function()
+{
+    auto_load(name);
+});
+
+document.getElementById("url").innerHTML = String(name);
+
+</script>
+<body>
+
+<p id = "url"> </p>
+
+<div id = "auto_load_div"> </div>
+
+<div id="chartContainer" style="height: 370px; width:100%;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+<ul id = "myList"> </ul>
+
+<script  src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+<script>
+
+function auto_load()
+{
+   
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() 
+{
+    if (this.readyState == 4 && this.status == 200) 
+    {
+        var myObj = JSON.parse(this.responseText);
+        document.getElementById("auto_load_div").innerHTML = myObj.range_cm;
+    }
+};
+
+xmlhttp.open("GET", "https://us.wio.seeed.io/v1/node/GroveUltraRangerD0/range_in_cm?access_token=2974f3b0ab4b63c91b84197f534c5521", true);
+
+xmlhttp.send();
+
+var node = document.createElement("LI");
+    var textnode = document.createTextNode(document.getElementById ("auto_load_div").innerHTML);
+    node.appendChild(textnode);
+    document.getElementById("myList").appendChild(node);
+}
+
+function rand()
+{
+    return Math.floor(Math.random()*100);
+}
+
+
+setInterval(auto_load,1000);
+
+
+window.onload = function () {
+
+var dps = []; // dataPoints
+var chart = new CanvasJS.Chart("chartContainer", {
+	title :{
+		text: "Distance vs Time"
+	},
+	axisY: {
+		includeZero: false
+	},      
+	data: [{
+		type: "line",
+		dataPoints: dps
+	}]
+});
+
+var xVal = 0;
+var yVal = 100; 
+var updateInterval = 1000;
+var dataLength = 20; // number of dataPoints visible at any point
+
+var updateChart = function (count) {
+
+	count = count || 1;
+
+	for (var j = 0; j < count; j++) {
+		yVal = parseInt(document.getElementById ("auto_load_div").innerHTML);
+		dps.push({
+			x: xVal,
+			y: yVal
+		});
+		xVal++;
+	}
+
+	if (dps.length > dataLength) {
+		dps.shift();
+	}
+
+	chart.render();
+};
+
+updateChart(dataLength);
+setInterval(function(){updateChart()}, updateInterval);
+
+}
+
+
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+<style>
+#mydiv {
+    position: absolute;
+    z-index: 9;
+    background-color: #f1f1f1;
+    text-align: center;
+    border: 1px solid #d3d3d3;
+}
+
+#mydivheader {
+    padding: 10px;
+    cursor: move;
+    z-index: 10;
+    background-color: #2196F3;
+    color: #fff;
+}
+</style>
+
+
+<meta charset = "UTF-8">
+<meta name = "viewport" content = "width=device-width, initial-scale = 1.0">
+
+<style>
+    #auto_load_div{width:70px; height: 30px; margin: 40px auto; color:#fff;}
+</style>
+
+<body>
+
+
+<script>
+$(document).ready(function()
+{
+    auto_load();
+});
+
+</script>
+
+<h1>Draggable DIV Element</h1>
+
+<p>Click and hold the mouse button down while moving the DIV element</p>
+
+<div id="mydiv">
+  <div id="mydivheader">Click here to move</div>
+  <p>Move</p>
+  <p>this</p>
+  <p>DIV</p>
+</div>
+
+<script>
+//Make the DIV element draggagle:
+dragElement(document.getElementById(("mydiv")));
+
+function dragElement(elmnt) {
+  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+  if (document.getElementById(elmnt.id + "header")) {
+    /* if present, the header is where you move the DIV from:*/
+    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+  } else {
+    /* otherwise, move the DIV from anywhere inside the DIV:*/
+    elmnt.onmousedown = dragMouseDown;
+  }
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    // get the mouse cursor position at startup:
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    // call a function whenever the cursor moves:
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    // calculate the new cursor position:
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    // set the element's new position:
+    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+  }
+
+  function closeDragElement() {
+    /* stop moving when mouse button is released:*/
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+</script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<body>
+
+<p id = "url"> </p>
+
+<div id = "auto_load_div"> </div>
+
+<div id="chartContainer" style="height: 370px; width:100%;"></div>
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
+<ul id = "myList"> </ul>
+
+<script  src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+<script>
+
+function auto_load()
+{
+   
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function() 
+{
+    if (this.readyState == 4 && this.status == 200) 
+    {
+        var myObj = JSON.parse(this.responseText);
+        document.getElementById("auto_load_div").innerHTML = myObj.range_cm;
+    }
+};
+
+xmlhttp.open("GET", "https://us.wio.seeed.io/v1/node/GroveUltraRangerD0/range_in_cm?access_token=2974f3b0ab4b63c91b84197f534c5521", true);
+
+xmlhttp.send();
+
+var node = document.createElement("LI");
+    var textnode = document.createTextNode(document.getElementById ("auto_load_div").innerHTML);
+    node.appendChild(textnode);
+    document.getElementById("myList").appendChild(node);
+}
+
+function rand()
+{
+    return Math.floor(Math.random()*100);
+}
+
+
+setInterval(auto_load,1000);
+
+
+window.onload = function () {
+
+var dps = []; // dataPoints
+var chart = new CanvasJS.Chart("chartContainer", {
+	title :{
+		text: "Distance vs Time"
+	},
+	axisY: {
+		includeZero: false
+	},      
+	data: [{
+		type: "line",
+		dataPoints: dps
+	}]
+});
+
+var xVal = 0;
+var yVal = 100; 
+var updateInterval = 1000;
+var dataLength = 20; // number of dataPoints visible at any point
+
+var updateChart = function (count) {
+
+	count = count || 1;
+
+	for (var j = 0; j < count; j++) {
+		yVal = parseInt(document.getElementById ("auto_load_div").innerHTML);
+		dps.push({
+			x: xVal,
+			y: yVal
+		});
+		xVal++;
+	}
+
+	if (dps.length > dataLength) {
+		dps.shift();
+	}
+
+	chart.render();
+};
+
+updateChart(dataLength);
+setInterval(function(){updateChart()}, updateInterval);
+
+}
+
+
+</script>
+
+
+</body>
+</html>
